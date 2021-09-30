@@ -1,0 +1,21 @@
+@font-face {
+    font-family: "fontMovie";
+    src: url("./Pony.ttf");
+}
+
+.bookingTicket {
+    font-family: "fontMovie";
+    /* background: url("../img/bgmovie.jpg") no-repeat center center; */
+    background-size: cover;
+    position: relative;
+}
+
+.overlay {
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+    background-color: #000;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
