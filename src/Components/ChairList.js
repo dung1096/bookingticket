@@ -1,10 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-
+import { selectAction } from '../redux/actions/BookingTicketAction';
+import ticketStyle from '../styles/BookingTicketStyle.module.css';
 class ChairList extends Component {
     renderChair = () => {
         let content = [];
-        let {lineChairs} = this.props;
+        let {lineChairs, selectingChairs} = this.props;
 
         //Duyệt từng hàng ghế trong mảng
         lineChairs.map((lineChair, key) => {
@@ -13,10 +14,10 @@ class ChairList extends Component {
                 content.push(
                     <div key={key} className="row">
                         <div className="col-2">{lineChair.line}</div>
-                        <div className="col-10 d-flex">
+                        <div className="col-10 d-flex justify-content-around">
                             {lineChair.chairList.map((chair, index) => {
                                 return (
-                                    <div key={index}>
+                                    <div key={index} className={`${ticketStyle.firstChair}`}>
                                         {chair.number}
                                     </div>
                                 )
@@ -28,11 +29,38 @@ class ChairList extends Component {
                 //Ngược lại, hiển thị ghế theo hàng
                 content.push(
                     <div key={key} className="row">
-                        <div className="col-2">{lineChair.line}</div>
-                        <div className="col-10 d-flex">
+                        <div className={`${ticketStyle.rowNumber} col-2`}>{lineChair.line}</div>
+                        <div className="col-10 d-flex justify-content-around">
                             {lineChair.chairList.map((chair, index) => {
+                                // Ghế đã được chọn
+                                if(chair.selected) {
+                                    return (
+                                        <div key={index} className={`${ticketStyle.chair} ${ticketStyle.selectedChair}`} onClick={()=>{
+                                            this.props.selectChair(chair);
+                                        }}>
+                                            {chair.number}
+                                        </div>
+                                    )
+                                }
+                                //Ghế đang được chọn
+                                for (let selectingChair of selectingChairs) {
+                                    if(selectingChair.number === chair.number) {
+                                        return (
+                                            <div key={index} className={`${ticketStyle.chair} ${ticketStyle.selectingChair}`} onClick={()=>{
+                                                this.props.selectChair(chair);
+                                            }}>
+                                                {chair.number}
+                                            </div>
+                                        )
+                                    }
+                                }
+                                // Ghế chưa được chọn
                                 return (
-                                    <div key={index}>
+                                    <div key={index} className={`${ticketStyle.chair}`}
+                                    onClick={()=>{
+                                                this.props.selectChair(chair);
+                                            }}
+                                    >
                                         {chair.number}
                                     </div>
                                 )
@@ -51,8 +79,14 @@ class ChairList extends Component {
     render() {
         return (
             <section className="text-center text-light">
-                <h3 className="text-warning">ĐẶT VÉ XEM PHIM</h3>
-                <p>Màn hình</p>
+                <div className="row">
+                    <div className="col-2"></div>
+                    <div className="col-10">
+                        <h3 className="text-warning">ĐẶT VÉ XEM PHIM</h3>
+                        <p className={`${ticketStyle.screen}`}>Màn hình</p>
+                    </div>
+                </div>
+                
                 {this.renderChair()}
             </section>
         );
@@ -61,11 +95,13 @@ class ChairList extends Component {
 
 const mapStateToProps = (state) => ({
     lineChairs: state.BookingTicketReducer.lineChairs,
-    selectedChairs: state.BookingTicketReducer.selectedChairs,
+    selectingChairs: state.BookingTicketReducer.selectingChairs,
 })
 
 const mapDispatchToProps = (dispatch) => ({
-
+    selectChair: (chair) => {
+        dispatch(selectAction(chair));
+    }
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChairList);

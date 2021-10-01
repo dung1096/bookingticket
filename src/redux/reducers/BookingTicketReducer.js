@@ -1,5 +1,7 @@
+import { BOOK, CANCEL, SELECT } from "../types/BookingTicketType";
+
 const stateDefault = {
-  selectedChairs: [],
+  selectingChairs: [],
   total: 0,
   lineChairs: [
     {
@@ -194,12 +196,61 @@ const stateDefault = {
 
 const BookingTicketReducer = (state = stateDefault,action) => {
     switch (action.type) {
-        case 1:
-            
+        case SELECT: {
+          if (action.chair.selected) {
             return { ...state };
-    
+          }
+          let selectingChairsUpdate = [...state.selectingChairs];
+          let key = true;
+          selectingChairsUpdate.map((chair, index)=>{
+            if(chair.number === action.chair.number) {
+              selectingChairsUpdate.splice(index, 1);
+              state.total -= action.chair.price;
+              return key = false;
+            }
+            return key;
+          })
+          if (key) {
+            selectingChairsUpdate.push(action.chair);
+            state.total += action.chair.price;
+          }
+          state.selectingChairs = selectingChairsUpdate;
+          return { ...state };
+        }
+
+        case CANCEL: {
+          let selectingChairsUpdate = [...state.selectingChairs];
+          selectingChairsUpdate.map((chair, index)=>{
+            if(chair.number === action.chair.number) {
+              selectingChairsUpdate.splice(index, 1);
+              state.total -= action.chair.price;
+            }
+            return selectingChairsUpdate;
+          })
+          state.selectingChairs = selectingChairsUpdate;
+          return { ...state };
+        }
+
+        case BOOK: {
+          let chairUpdate = [...state.lineChairs];
+          for (let chairs of chairUpdate) {
+            chairs.chairList.map((chair)=>{
+              for (let selectingChair of state.selectingChairs) {
+                if (selectingChair.number === chair.number) {
+                  chair.selected = true;
+                }
+              }
+              return chairUpdate;
+            })
+          }
+          state.selectingChairs = [];
+          state.total = 0;
+          state.lineChairs = chairUpdate;
+          return { ...state };
+        }
+
         default:
-            return { ...state };
+          return { ...state };
     }
 }
 

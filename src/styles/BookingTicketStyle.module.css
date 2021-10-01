@@ -5,7 +5,6 @@
 
 .bookingTicket {
     font-family: "fontMovie";
-    /* background: url("../img/bgmovie.jpg") no-repeat center center; */
     background-size: cover;
     position: relative;
 }
@@ -18,4 +17,72 @@
     position: absolute;
     top: 0;
     left: 0;
+}
+
+.screen {
+    border-bottom: 50px solid rgb(255, 159, 95);
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    height: 100;
+    width: 100%;
+    margin-bottom: 50px;
+    filter: drop-shadow(4px 30px 20px rgba(255, 255, 255, 0.5));
+    font-size: 25px;
+    color: #fff;
+}
+
+.rowNumber {
+    background: none;
+    border: none;
+    font-size: 30px;
+    color: yellow;
+}
+
+.firstChair {
+    color: yellow;
+    font-size: 35px;
+    width: 45px;
+    height: 35px;
+    margin-bottom: 30px;
+}
+
+.chair {
+    border: 3px solid orange;
+    width: 45px;
+    height: 35px;
+    font-size: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.selectedChair {
+    background: orange;
+    color: #000;
+    cursor: no-drop !important;
+}
+
+.selectingChair {
+    background: rgb(109, 238, 109);
+    border: 3px solid rgb(109, 238, 109);
+    color: #000;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 45px;
+    height: 35px;
+}
+
+@media screen and (max-width: 768px) {
+    .screen {
+        width: 90%;
+    }
+    .rowNumber {
+        font-size: 20px;
+    }
+    .firstChar {
+        font-size: 20px;
+    }
+    .ghe {
+        font-size: 8px;
+    }
 }

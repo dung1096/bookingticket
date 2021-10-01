@@ -1,21 +1,48 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bookAction, cancelAction } from '../redux/actions/BookingTicketAction';
+import ticketStyle from '../styles/BookingTicketStyle.module.css';
 
 class BookChairs extends Component {
+    renderMenu = () => {
+        let { selectingChairs } = this.props;
+
+        return selectingChairs.map((chair, index) => {
+            return (
+                <tr key={index} className="text-warning ">
+                <td>{chair.number}</td>
+                <td>{chair.price}</td>
+                <td>
+                    <button
+                    onClick={() => {
+                        this.props.cancelChair(chair);
+                    }}
+                    className="btn text-danger"
+                    >
+                    X
+                    </button>
+                </td>
+                </tr>
+            );
+        });
+    };
+
     render() {
+        let {total} = this.props;
         return (
             <section className="text-light">
-                <h4 className="text-center">DANH SÁCH GHẾ BẠN CHỌN</h4>
+                <h4 className="text-center text-info">DANH SÁCH GHẾ BẠN CHỌN</h4>
                 <div className="d-flex align-items-center">
-                <div></div>
-                <p>Ghế đã đặt</p>
+                    <div className={`m-2 ${ticketStyle.chair} ${ticketStyle.selectedChair}`}></div>
+                    <p>Ghế đã đặt</p>
                 </div>
                 <div className="d-flex align-items-center">
-                <div></div>
-                <p>Ghế đang chọn</p>
+                    <div className={`m-2 ${ticketStyle.chair} ${ticketStyle.selectingChair}`}></div>
+                    <p>Ghế đang chọn</p>
                 </div>
                 <div className="d-flex align-items-center">
-                <div></div>
-                <p>Ghế chưa đặt</p>
+                    <div className={`m-2 ${ticketStyle.chair}`}></div>
+                    <p>Ghế chưa đặt</p>
                 </div>
 
                 <table className="table text-light">
@@ -27,14 +54,16 @@ class BookChairs extends Component {
                         </tr>
                     </thead>
                     <tbody>
-
+                        {this.renderMenu()}
                     </tbody>
                     <tfoot>
                         <tr>
                             <td>Tổng tiền: </td>
-                            <td className="text-success"></td>
+                            <td className="text-success">{total}</td>
                             <td>
-                                <button type="button">
+                                <button type="button" className="btn btn-info" onClick={()=>{
+                                    this.props.bookChair();
+                                }}>
                                     Đặt
                                 </button>
                             </td>
@@ -46,4 +75,18 @@ class BookChairs extends Component {
     }
 }
 
-export default BookChairs;
+const mapStateToProps = (state) => ({
+    total: state.BookingTicketReducer.total,
+    selectingChairs: state.BookingTicketReducer.selectingChairs,
+})
+
+const mapDispatchToProps = (dispatch) => ({
+    cancelChair: (chair) => {
+        dispatch(cancelAction(chair));
+    },
+    bookChair: () => {
+        dispatch(bookAction());
+    }
+})
+
+export default connect(mapStateToProps,mapDispatchToProps)(BookChairs);
